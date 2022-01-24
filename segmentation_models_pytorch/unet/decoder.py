@@ -71,7 +71,8 @@ class UnetDecoder(nn.Module):
             use_batchnorm=True,
             attention_type=None,
             center=False,
-            full=False
+            full=False,
+            return_features=False
     ):
         super().__init__()
 
@@ -81,6 +82,8 @@ class UnetDecoder(nn.Module):
                     n_blocks, len(decoder_channels)
                 )
             )
+
+        self.return_features = return_features
 
         encoder_channels = encoder_channels[1:]  # remove first skip with same spatial resolution
         encoder_channels = encoder_channels[::-1]  # reverse channels to start from head of encoder
@@ -116,8 +119,14 @@ class UnetDecoder(nn.Module):
         skips = features[1:]
 
         x = self.center(head)
+
+        decoded_features = []
         for i, decoder_block in enumerate(self.blocks):
             skip = skips[i] if i < len(skips) else None
             x = decoder_block(x, skip)
+            decoded_features.append(x)
+        
+        if self.return_features:
+            return x, decoded_features
 
         return x
