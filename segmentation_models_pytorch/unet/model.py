@@ -60,7 +60,8 @@ class Unet(SegmentationModel):
         activation: Optional[Union[str, callable]] = None,
         aux_params: Optional[dict] = None,
         full: Optional[bool] = False,
-        return_decoder_features = False
+        return_decoder_features = False,
+        disable_segmentation_head = False,
     ):
         super().__init__()
 
@@ -82,12 +83,13 @@ class Unet(SegmentationModel):
             return_features=return_decoder_features
         )
 
-        self.segmentation_head = SegmentationHead(
-            in_channels=decoder_channels[-1],
-            out_channels=classes,
-            activation=activation,
-            kernel_size=3,
-        )
+        if not disable_segmentation_head:
+            self.segmentation_head = SegmentationHead(
+                in_channels=decoder_channels[-1],
+                out_channels=classes,
+                activation=activation,
+                kernel_size=3,
+            )
 
         if aux_params is not None:
             self.classification_head = ClassificationHead(
