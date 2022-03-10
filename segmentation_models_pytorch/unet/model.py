@@ -90,6 +90,8 @@ class Unet(SegmentationModel):
                 activation=activation,
                 kernel_size=3,
             )
+        else:
+            self.segmentation_head = None
 
         if aux_params is not None:
             self.classification_head = ClassificationHead(
