@@ -6,7 +6,8 @@ class SegmentationModel(torch.nn.Module):
 
     def initialize(self):
         init.initialize_decoder(self.decoder)
-        init.initialize_head(self.segmentation_head)
+        if self.segmentation_head is not None:
+            init.initialize_head(self.segmentation_head)
         if self.classification_head is not None:
             init.initialize_head(self.classification_head)
 
