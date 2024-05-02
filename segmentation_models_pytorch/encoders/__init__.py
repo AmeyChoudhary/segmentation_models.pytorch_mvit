@@ -1,5 +1,6 @@
 import functools
 import torch.utils.model_zoo as model_zoo
+import timm
 
 from .resnet import resnet_encoders
 from .dpn import dpn_encoders
